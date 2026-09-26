@@ -1,0 +1,11 @@
+default:
+  suites:
+    default:
+      paths:    [ "%paths.base%/features" ]
+      contexts: [ FeatureContext ]
+  extensions:
+    Behat\MinkExtension:
+      base_url: http://localhost/
+      sessions:
+        default:
+          browserkit_http: ~

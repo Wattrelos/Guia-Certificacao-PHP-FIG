@@ -3,3 +3,5 @@
 
 # Abre uma exceção para o arquivo de exemplo não ser ignorado
 !**/.env.example
+
+/vendor/

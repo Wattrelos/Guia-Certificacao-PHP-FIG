@@ -1,0 +1,37 @@
+{
+    "name": "wattrelos/guia_desenvolvimento_software",
+    "description": "Guia de desenvolvimento de software",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Wattrelos\\GuiaDesenvolvimentoSoftware\\": "backend/src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "JosiasWattrelos",
+            "email": "josiaswattrelos-ciee@yahoo.com.br"
+        }
+    ],
+    "require-dev": {
+        "behat/behat": "^3.33",
+        "behat/mink": "^1.13",
+        "friends-of-behat/mink-extension": "^2.7",
+        "behat/mink-browserkit-driver": "^2.3",
+        "symfony/http-client": "^8.1",
+        "phpstan/phpstan": "^2.2",
+        "vimeo/psalm": "^6.18",
+        "rector/rector": "^2.6",
+        "pestphp/pest": "^5.2",
+        "phpunit/phpunit": "^13.3",
+        "mockery/mockery": "^1.6",
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "squizlabs/php_codesniffer": "^4.0",
+        "playwright-php/playwright": "^1.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}

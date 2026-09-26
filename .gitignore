@@ -1,0 +1,5 @@
+# Ignora qualquer arquivo que comece com .env (inclusive em subpastas)
+**/.env*
+
+# Abre uma exceção para o arquivo de exemplo não ser ignorado
+!**/.env.example

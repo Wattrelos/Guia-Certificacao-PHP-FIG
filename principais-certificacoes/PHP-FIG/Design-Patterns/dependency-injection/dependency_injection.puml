@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+package "Application Layer" {
+    class OrderService {
+        - db : DatabaseConnectionInterface
+        + __construct(db : DatabaseConnectionInterface)
+        + checkout(orderId : int) : bool
+    }
+}
+
+package "Infrastructure Layer" {
+    interface DatabaseConnectionInterface <<interface>> {
+        + query(sql : string, params : array) : array
+        + execute(sql : string, params : array) : int
+        + getPdo() : PDO
+    }
+
+    class MySQLConnection {
+        - pdo : PDO
+        - host : string
+        - database : string
+        - username : string
+        - port : int
+        + __construct(...)
+        + {static} createFromEnv(envPath : string) : MySQLConnection
+        + query(sql : string, params : array) : array
+        + execute(sql : string, params : array) : int
+        + getPdo() : PDO
+    }
+
+    class PostgreSQLConnection {
+        - pdo : PDO
+        - host : string
+        - database : string
+        + __construct(...)
+        + query(sql : string, params : array) : array
+        + execute(sql : string, params : array) : int
+        + getPdo() : PDO
+    }
+
+    class InMemoryConnection <<Mock>> {
+        - executedQueries : array
+        - stubbedResults : array
+        + __construct(stubbedResults : array)
+        + query(sql : string, params : array) : array
+        + execute(sql : string, params : array) : int
+        + hasExecuted(sqlFragment : string) : bool
+    }
+}
+
+' Relação de Dependência e Implementação
+OrderService ..> DatabaseConnectionInterface : <<uses / Constructor Injection>>
+MySQLConnection ..|> DatabaseConnectionInterface : <<implements>>
+PostgreSQLConnection ..|> DatabaseConnectionInterface : <<implements>>
+InMemoryConnection ..|> DatabaseConnectionInterface : <<implements>>
+
+note bottom of OrderService
+  Princípio da Inversão de Dependência (DIP - SOLID):
+  Módulos de regra de negócio dependem de interfaces estáveis,
+  e nunca de implementações voláteis de infraestrutura.
+end note
+
+@enduml

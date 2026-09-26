@@ -1,0 +1,39 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+class DatabaseConnection <<Singleton>> {
+    - {static} instance : DatabaseConnection
+    - connectionId : string
+    - pdo : PDO
+    - connected : bool
+    - errorMessage : string
+    - config : array
+
+    - __construct()
+    - __clone()
+    + __wakeup() : void
+    + __unserialize(data : array) : void
+
+    + {static} getInstance() : DatabaseConnection
+    + getConnectionId() : string
+    + getPdo() : PDO
+    + isConnected() : bool
+    + getErrorMessage() : string
+    + getConfig() : array
+}
+
+note right of DatabaseConnection::getInstance
+  if (self::$instance === null) {
+      self::$instance = new self();
+  }
+  return self::$instance;
+end note
+
+note left of DatabaseConnection::__construct
+  Construtor privado impede
+  a criação com 'new' fora da classe
+end note
+
+@enduml

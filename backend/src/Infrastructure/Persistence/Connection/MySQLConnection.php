@@ -14,6 +14,7 @@ use RuntimeException;
  * Demonstra a Injeção de Dependência através do Construtor (Constructor Injection):
  * - Pode receber uma instância pré-existente de PDO (ideal para testes ou conexões compartilhadas).
  * - Ou receber as credenciais e parâmetros de conexão configurados externamente (ex: do .env).
+ * - Suporta prefixo dinâmico de tabelas (DB_PREFIX, ex: agsc_).
  * - Possui método de fábrica createFromEnv() para leitura automática do backend/.env.
  */
 class MySQLConnection implements DatabaseConnectionInterface 
@@ -21,6 +22,7 @@ class MySQLConnection implements DatabaseConnectionInterface
     private ?PDO $pdo = null;
     private bool $connected = false;
     private ?string $lastError = null;
+    private string $prefix = '';
 
     /**
      * @var array<string, mixed>
@@ -36,6 +38,7 @@ class MySQLConnection implements DatabaseConnectionInterface
      * @param string|null $username Usuário do banco
      * @param string|null $password Senha de acesso
      * @param int $port Porta de rede (padrão: 3306)
+     * @param string|null $prefix Prefixo das tabelas (padrão: lido do .env ou agsc_)
      * @param array<int, mixed> $options Opções extras do driver PDO
      */
     public function __construct(
@@ -45,12 +48,14 @@ class MySQLConnection implements DatabaseConnectionInterface
         ?string $username = null,
         ?string $password = null,
         int $port = 3306,
+        ?string $prefix = null,
         array $options = []
     ) {
         if ($pdo !== null) {
             $this->pdo = $pdo;
             $this->connected = true;
-            $this->config = ['driver' => 'mysql', 'source' => 'injected_pdo'];
+            $this->prefix = $prefix ?? $_ENV['DB_PREFIX'] ?? 'agsc_';
+            $this->config = ['driver' => 'mysql', 'source' => 'injected_pdo', 'prefix' => $this->prefix];
             return;
         }
 
@@ -64,11 +69,13 @@ class MySQLConnection implements DatabaseConnectionInterface
         $username = $username ?? $_ENV['DB_USERNAME'] ?? 'desenvolvedor';
         $password = $password ?? $_ENV['DB_PASSWORD'] ?? '';
         $port     = $port !== 3306 ? $port : (int) ($_ENV['DB_PORT'] ?? 3306);
+        $this->prefix = $prefix ?? $_ENV['DB_PREFIX'] ?? 'agsc_';
 
         $this->config = [
             'driver'   => 'mysql',
             'host'     => $host,
             'port'     => $port,
+            'prefix'   => $this->prefix,
             'database' => $database,
             'username' => $username,
         ];
@@ -105,8 +112,25 @@ class MySQLConnection implements DatabaseConnectionInterface
             database: $_ENV['DB_DATABASE'] ?? 'guia_desenvolvimento_software',
             username: $_ENV['DB_USERNAME'] ?? 'desenvolvedor',
             password: $_ENV['DB_PASSWORD'] ?? '',
-            port: (int) ($_ENV['DB_PORT'] ?? 3306)
+            port: (int) ($_ENV['DB_PORT'] ?? 3306),
+            prefix: $_ENV['DB_PREFIX'] ?? 'agsc_'
         );
+    }
+
+    /**
+     * Retorna o prefixo configurado para as tabelas.
+     */
+    public function getPrefix(): string 
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Retorna o nome da tabela com o prefixo adicionado (ex: 'user' -> 'agsc_user').
+     */
+    public function tableName(string $table): string 
+    {
+        return $this->prefix . $table;
     }
 
     /**

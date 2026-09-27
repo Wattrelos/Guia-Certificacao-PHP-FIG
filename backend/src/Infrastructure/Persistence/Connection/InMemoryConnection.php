@@ -24,9 +24,22 @@ class InMemoryConnection implements DatabaseConnectionInterface
      */
     private array $stubbedResults = [];
 
-    public function __construct(array $stubbedResults = []) 
+    private string $prefix = 'agsc_';
+
+    public function __construct(array $stubbedResults = [], string $prefix = 'agsc_') 
     {
         $this->stubbedResults = $stubbedResults;
+        $this->prefix = $prefix;
+    }
+
+    public function getPrefix(): string 
+    {
+        return $this->prefix;
+    }
+
+    public function tableName(string $table): string 
+    {
+        return $this->prefix . $table;
     }
 
     public function query(string $sql, array $params = []): array 

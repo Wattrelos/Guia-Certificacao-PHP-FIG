@@ -25,7 +25,8 @@ class PostgreSQLConnection implements DatabaseConnectionInterface
         private string $database = 'guia_desenvolvimento_software',
         private string $username = 'postgres',
         private string $password = '',
-        private int $port = 5432
+        private int $port = 5432,
+        private string $prefix = 'agsc_'
     ) {
         if ($pdo !== null) {
             $this->pdo = $pdo;
@@ -45,6 +46,16 @@ class PostgreSQLConnection implements DatabaseConnectionInterface
             $this->connected = false;
             $this->lastError = $e->getMessage();
         }
+    }
+
+    public function getPrefix(): string 
+    {
+        return $this->prefix;
+    }
+
+    public function tableName(string $table): string 
+    {
+        return $this->prefix . $table;
     }
 
     public function query(string $sql, array $params = []): array 

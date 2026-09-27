@@ -33,5 +33,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
+    },
+    "require": {
+        "twig/twig": "^3.0"
     }
 }

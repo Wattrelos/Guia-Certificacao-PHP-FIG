@@ -39,4 +39,17 @@ interface DatabaseConnectionInterface
      * Retorna a instância nativa do PDO (se aplicável), permitindo transações avançadas.
      */
     public function getPdo(): ?PDO;
+
+    /**
+     * Retorna o prefixo configurado para as tabelas do banco de dados (ex: agsc_).
+     */
+    public function getPrefix(): string;
+
+    /**
+     * Resolve o nome completo da tabela adicionando o prefixo configurado.
+     *
+     * @param string $table Nome base da tabela (ex: 'user')
+     * @return string Nome com o prefixo aplicado (ex: 'agsc_user')
+     */
+    public function tableName(string $table): string;
 }
